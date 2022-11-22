@@ -2,7 +2,7 @@
 
 app.initialize()
 
-var app = {
+const app = {
     initialize: () => {
         document.addEventListener('deviceready', this.refreshDeviceList, false);
         refreshButton.addEventListener('touchstart', this.refreshDeviceList, false);
@@ -21,13 +21,13 @@ var app = {
         ble.scan([], 5, app.onDiscoverDevice, app.onError); // scan for all devices
     },
 
-    onDiscoverDevice: function (device) {
+    onDiscoverDevice: device => {
 
         console.log(JSON.stringify(device));
-        var listItem = document.createElement('li'),
-            html = '<b>' + device.name + '</b><br/>' +
-                'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
-                device.id;
+        const listItem = document.createElement('li');
+        const html = '<b>' + device.name + '</b><br/>' +
+            'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
+            device.id;
 
         listItem.dataset.deviceId = device.id;  // TODO
         listItem.innerHTML = html;
@@ -36,17 +36,17 @@ var app = {
     },
 
     connect: e => {
-        var deviceId = e.target.dataset.deviceId,
-            onConnect = () => {
-                disconnectButton.dataset.deviceId = deviceId;
-                app.showDetailPage();
-            };
+        const deviceId = e.target.dataset.deviceId;
+        const onConnect = () => {
+            disconnectButton.dataset.deviceId = deviceId;
+            app.showDetailPage();
+        };
 
         ble.connect(deviceId, onConnect, app.onError);
     },
 
     disconnect: event => {
-        var deviceId = event.target.dataset.deviceId;
+        const deviceId = event.target.dataset.deviceId;
         ble.disconnect(deviceId, app.showMainPage, app.onError);
     },
 
@@ -60,7 +60,7 @@ var app = {
         detailPage.hidden = false;
     },
 
-    onError: (reason) => {
+    onError: reason => {
         alert("ERROR: " + reason); // real apps should use notification.alert
     }
 };
