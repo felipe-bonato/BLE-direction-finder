@@ -4,13 +4,11 @@
     "cordova-plugin-ble-central": "^1.6.1"
   },
   "cordova": {
+    "plugins": {
+      "cordova-plugin-ble-central": {}
+    },
     "platforms": [
       "android"
-    ],
-    "plugins": {
-      "cordova-plugin-ble-central": {
-        "ACCESS_BACKGROUND_LOCATION": "false"
-      }
-    }
+    ]
   }
 }
