@@ -1,5 +1,7 @@
 'use strict';
 
+import {postRequest} from "./api"
+
 var commandType = 0;
 let closestDevice = { name: "", id: "", rssi: "" };
 const measuredPower = -58 //1 metro = -60 Dbm
@@ -95,11 +97,13 @@ var app = {
             array[0] = 65
             ble.write(deviceId, ESP.service, ESP.write, array.buffer, print('sent'), print('failed to send'))
             commandType = 1;
+            //postRequest(1,"device_name", "device_lat","device_lng")
         }
         else {
             array[0] = 66
             ble.write(deviceId, ESP.service, ESP.write, array.buffer, print('sent'), print('failed to send'));
             commandType = 0;
+            //postRequest(0,"device_name", "device_lat","device_lng")
         }
     },
     disconnect: function (event) {
