@@ -2,9 +2,27 @@
   "cordova-plugin-ble-central": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-ble-central"
+      "id": "cordova-plugin-ble-central@^1.6.1"
     },
     "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-advanced-http": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-advanced-http"
+    },
+    "is_top_level": true,
+    "variables": {
+      "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
+    }
+  },
+  "cordova-plugin-file": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-file@>=2.0.0"
+    },
+    "is_top_level": false,
     "variables": {}
   }
 }

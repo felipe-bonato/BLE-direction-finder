@@ -1,6 +1,6 @@
 'use strict';
 
-import {postRequest} from "./api"
+import { postRequest } from "./api"
 
 var commandType = 0;
 let closestDevice = { name: "", id: "", rssi: "" };
@@ -35,7 +35,7 @@ var app = {
         ble.scan([], 5, app.onDiscoverDevice, app.onError);
 
         setTimeout(function () {
-            app.addTextElement(closestDevice.name, closestDevice.id,app.RSSItoDistance(closestDevice.rssi) + " M")
+            app.addTextElement(closestDevice.name, closestDevice.id, app.RSSItoDistance(closestDevice.rssi) + " M")
             connectButton.dataset.deviceId = closestDevice.id
             document.getElementById("connectButton").disabled = false;
             document.getElementById("refreshButton").disabled = false;
@@ -56,14 +56,14 @@ var app = {
             closestDevice.rssi = device.rssi;
         }
 
-        /* var listItem = document.createElement('li'),
+        var listItem = document.createElement('li'),
             html = '<b>' + device.name + '</b><br/>' +
                 'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
                 device.id + '&nbsp;||&nbsp;' + closestDevice.name;
 
         listItem.dataset.deviceId = device.id;
         listItem.innerHTML = html;
-        deviceList.appendChild(listItem); */
+        deviceList.appendChild(listItem);
     },
     addTextElement: function (text) {
         var listItem = document.createElement('li'),
@@ -74,8 +74,8 @@ var app = {
     addTextElement: function (text1, text2, text3) {
         var listItem = document.createElement('li'),
             html = '<b>' + text1 + '</b><br/><br/>' +
-             '<b>' + 'ID: ' + '</b>' + text2 + '<br/>' +
-             '<b>' + 'Distancia: ' + '</b>' + text3;
+                '<b>' + 'ID: ' + '</b>' + text2 + '<br/>' +
+                '<b>' + 'Distancia: ' + '</b>' + text3;
         listItem.innerHTML = html;
         deviceList.appendChild(listItem);
     },
@@ -93,18 +93,19 @@ var app = {
     commandButtonAction: function (event) {
         var deviceId = event.target.dataset.deviceId
         var array = new Uint8Array(1)
+
         if (commandType == 0) {
             array[0] = 65
             ble.write(deviceId, ESP.service, ESP.write, array.buffer, print('sent'), print('failed to send'))
             commandType = 1;
-            //postRequest(1,"device_name", "device_lat","device_lng")
         }
         else {
             array[0] = 66
             ble.write(deviceId, ESP.service, ESP.write, array.buffer, print('sent'), print('failed to send'));
             commandType = 0;
-            //postRequest(0,"device_name", "device_lat","device_lng")
         }
+
+        postRequest(commandType, closestDevice.name, closestDevice.rssi, closestDevice.id)
     },
     disconnect: function (event) {
         var deviceId = event.target.dataset.deviceId;

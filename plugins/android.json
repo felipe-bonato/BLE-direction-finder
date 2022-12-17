@@ -10,7 +10,17 @@
     "cordova-plugin-ble-central": {
       "ACCESS_BACKGROUND_LOCATION": "false",
       "PACKAGE_NAME": "com.megster.battery"
+    },
+    "cordova-plugin-advanced-http": {
+      "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1",
+      "ANDROIDX_WEBKIT_VERSION": "1.4.0",
+      "PACKAGE_NAME": "com.megster.battery"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-file": {
+      "ANDROIDX_WEBKIT_VERSION": "1.4.0",
+      "PACKAGE_NAME": "com.megster.battery"
+    }
+  }
 }
