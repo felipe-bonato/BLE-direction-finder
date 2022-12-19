@@ -1,7 +1,5 @@
 'use strict';
 
-import { postRequest } from "./api"
-
 var commandType = 0;
 let closestDevice = { name: "", id: "", rssi: "" };
 const measuredPower = -58 //1 metro = -60 Dbm
@@ -25,6 +23,10 @@ var app = {
         //deviceList.addEventListener('touchstart', this.connect, false); // assume not scrolling
     },
     onDeviceReady: function () {
+        var listItem = document.createElement('li'),
+            html = '<b>teste</b><br/>';
+        listItem.innerHTML = html;
+        deviceList.appendChild(listItem);
         app.refreshDeviceList();
     },
     refreshDeviceList: function () {
@@ -33,10 +35,14 @@ var app = {
         deviceList.innerHTML = '';
         closestDevice = [];
         ble.scan([], 5, app.onDiscoverDevice, app.onError);
+        app.postRequest(0, 'nome', 'lat', 'long');
 
         setTimeout(function () {
+            if (closestDevice.name == null) {
+                app.addTextElement("nome teste", "id teste", "0 m");
+            }
             app.addTextElement(closestDevice.name, closestDevice.id, app.RSSItoDistance(closestDevice.rssi) + " M")
-            connectButton.dataset.deviceId = closestDevice.id
+            connectButton.dataset.deviceId = closestDevice.id;
             document.getElementById("connectButton").disabled = false;
             document.getElementById("refreshButton").disabled = false;
         }, 6000);
@@ -55,11 +61,6 @@ var app = {
             closestDevice.id = device.id;
             closestDevice.rssi = device.rssi;
         }
-
-        var listItem = document.createElement('li'),
-            html = '<b>' + device.name + '</b><br/>' +
-                'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
-                device.id + '&nbsp;||&nbsp;' + closestDevice.name;
 
         listItem.dataset.deviceId = device.id;
         listItem.innerHTML = html;
@@ -105,7 +106,7 @@ var app = {
             commandType = 0;
         }
 
-        postRequest(commandType, closestDevice.name, closestDevice.rssi, closestDevice.id)
+        app.postRequest(commandType, closestDevice.name, closestDevice.rssi, closestDevice.id)
     },
     disconnect: function (event) {
         var deviceId = event.target.dataset.deviceId;
@@ -120,6 +121,56 @@ var app = {
         detailPage.hidden = false;
     },
     onError: function (reason) {
+        app.addTextElement(reason);
         alert("ERROR: " + reason); // real apps should use notification.alert
+    },
+    postRequest: async function (statusDevice, deviceInfo, lat, lng) {
+        var data = {
+            lat: lat,
+            lng: lng,
+            status_device: statusDevice,
+            deviceinfo: deviceInfo
+        };
+        //console.log(cordova.plugins.http.post);
+
+        /*
+        var config = {
+          method: 'post',
+          url: 'http://18.231.176.65:8080/api/updateoculos',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: data
+        }
+      
+        
+        axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data))
+          })
+          .catch(function (error) {
+            console.log(error)
+          })*/
+
+        var options = {
+            method: 'post',
+            headers: {
+                ContentType: 'application/x-www-form-urlencoded',
+                AcceptEncoding: 'gzip, deflate, br',
+                Connection: 'keep-alive'
+            },
+            data: data
+        }
+
+        try {
+            cordova.plugin.http.sendRequest('http://18.231.176.65:8080/api/updateoculos', options, function (response) {
+                app.addTextElement(response.status);
+            }, function (response) {
+                app.addTextElement(response.error)
+            })
+        } catch (e) {
+            app.addTextElement(e);
+        }
+
     }
 };
